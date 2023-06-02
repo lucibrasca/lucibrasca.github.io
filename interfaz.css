@@ -1,0 +1,20 @@
+body {
+    
+    background: #7f7fd5; 
+    background: -webkit-linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5); 
+    background: linear-gradient(to right, #91eae4, #86a8e7, #7f7fd5); 
+}
+
+   .fondo {
+    background-image: url(alimentos-grupos.jpg);
+    height: 100vh;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      opacity: 0.7;
+    }
+
+
+
+
+
