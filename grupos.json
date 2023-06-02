@@ -1,0 +1,16 @@
+[
+{"id": 1, "nombre": "Aceites y grasas", "unidadMedida": "gramos", "kcal": 9 },
+{"id": 2, "nombre": "Azúcares y dulces", "unidadMedida": "gramos", "kcal": 5 },
+{"id": 3, "nombre": "Bebidas con alcohol o azucaradas", "unidadMedida": "mililitros", "kcal": 5 },
+{"id": 4, "nombre": "Carnes, Aves y Embutidos", "unidadMedida": "gramos", "kcal": 2 },
+{"id": 5, "nombre": "Cereales", "unidadMedida": "gramos", "kcal": 4 },
+{"id": 6, "nombre": "Frutas", "unidadMedida": "gramos", "kcal": 4 },
+{"id": 7, "nombre": "Frutos secos", "unidadMedida": "gramos", "kcal": 6 },
+{"id": 8, "nombre": "Huevos", "unidadMedida": "gramos", "kcal": 1 },
+{"id": 9, "nombre": "Lácteos y derivados", "unidadMedida": "gramos", "kcal": 2 },
+{"id": 10, "nombre": "Legumbres", "unidadMedida": "gramos", "kcal": 3 },
+{"id": 11, "nombre": "Pastelería", "unidadMedida": "gramos", "kcal": 9 },
+{"id": 12, "nombre": "Pescados, mariscos y crustáceos", "unidadMedida": "gramos", "kcal": 2 },
+{"id": 13, "nombre": "Salsas y condimentos", "unidadMedida": "gramos", "kcal": 4 },
+{"id": 14, "nombre": "Verduras y hortalizas", "unidadMedida": "gramos", "kcal": 2 }
+]
