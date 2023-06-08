@@ -217,7 +217,6 @@ function calcularKCalorias()
 {
     let kcal = 0;
 
-    document.getElementById("resultado").innerHTML= ""; //limpia la div con el resultado anterior
 
     //recorre el arreglo ingesta, calcula las kcal de cada alimento y las acumula en la variable kcal
     ingesta.forEach(alim => {
@@ -240,44 +239,52 @@ function calcularKCalorias()
 }
 
 
+/***************** LIBRERIA SWEETALERT ***************************************/
 //Muestra según el sexo y el acumulado de Kcal(contadorIngestaDiaria), si se encuentra dentro o fuera de los límites de la IDR (ingesta diaria recomendada) 
 function mostrarResultado(contadorIngestaDiaria)
 {
     let sexo = document.getElementById("sexo").value;
-    let parrafo = document.createElement("p");
-    let resultado = document.getElementById("resultado");
 
+  
     if (sexo!= 0)
     {
         if ((sexo == 1) && (contadorIngestaDiaria < LIMITE1))
         {
-            parrafo.innerHTML="<h4>Su ingesta del día fue de "+contadorIngestaDiaria+" kcal.</h4><br><h5 class='text-info'>Esto equivale al "+PORCENTAJE(contadorIngestaDiaria,LIMITE1).toFixed(2)+"% de la IDR.</h5>";
+            Swal.fire({icon: 'info',title: 'Su ingesta del día fue de '+contadorIngestaDiaria+' kcal',
+                        text: 'Esto equivale al '+PORCENTAJE(contadorIngestaDiaria,LIMITE1).toFixed(2)+'% de la IDR.'});
         }
         else if ((sexo == 2) && (contadorIngestaDiaria < LIMITE2))
         {
-            parrafo.innerHTML="<h4>Su ingesta del día fue de "+contadorIngestaDiaria+" kcal.</h4><br><h5 class='text-info'>Esto equivale al "+PORCENTAJE(contadorIngestaDiaria,LIMITE2).toFixed(2)+"% de la IDR.</h5>";
+            Swal.fire({ icon: 'info',
+                        title: 'Su ingesta del día fue de '+contadorIngestaDiaria+' kcal',
+                        text:  'Esto equivale al '+PORCENTAJE(contadorIngestaDiaria,LIMITE2).toFixed(2)+'% de la IDR.'});
         }
         else if ((sexo == 1) && (contadorIngestaDiaria > LIMITE1) && (contadorIngestaDiaria < LIMITE2))
         {
-            parrafo.innerHTML="<h4>Su ingesta del día fue de "+contadorIngestaDiaria+" kcal.</h4><br><h5 class='text-info'>Se encuentra dentro de la IDR, entre 1500 y 2000 kcal/día en las mujeres.</h5>";
+            Swal.fire({ icon: 'info',
+                        title: 'Su ingesta del día fue de '+contadorIngestaDiaria+' kcal',
+                        text: 'Se encuentra dentro de la IDR, entre 1500 y 2000 kcal/día en las mujeres.'
+            });
         }
         else if ((sexo == 2) && (contadorIngestaDiaria > LIMITE2) && (contadorIngestaDiaria < LIMITE3))
         {
-            parrafo.innerHTML="<h4>Su ingesta del día fue de "+contadorIngestaDiaria+" kcal.</h4><br><h5 class='text-info'>Se encuentra dentro de la IDR, entre 2000 y 2500 kcal/día en los hombres.</h5>";
+            Swal.fire({ icon: 'info',
+                        title: 'Su ingesta del día fue de '+contadorIngestaDiaria+' kcal',
+                        text: 'Se encuentra dentro de la IDR, entre 2000 y 2500 kcal/día en los hombres.'
+            });
         } 
         else
         {
-            parrafo.innerHTML="<h4>Su ingesta del día fue de "+contadorIngestaDiaria+" kcal.</h4><br><h4 class='text-danger'>Le recomendamos que reduzca la misma.</h4>";
+            Swal.fire({ icon: 'warning',
+                        title: 'Su ingesta del día fue de '+contadorIngestaDiaria+' kcal',
+                        text: 'Le recomendamos que reduzca la misma.'})
         }
-
-        resultado.appendChild(parrafo);
-        
-        resultado.className += " bg-dark bg-gradient text-center";
 
     }
 }
 
 /***************** EVENTO CLICK DE BUTTON DESHACER *****************************/
+/***************** LIBRERIA SWEETALERT ***************************************/
 
 let deshacer = document.getElementById("deshacer"); //Variable que almacena el button deshacer
 
@@ -287,46 +294,65 @@ let deshacer = document.getElementById("deshacer"); //Variable que almacena el b
   //Recupera los datos del localStorage y vuelve la tablaPlato al estado anterior 
   function deshacerCambios()
   {
-    //Limpia los elemento necesarios para volver atras: tablaPlato, resultado y el arreglo ingesta
-    document.getElementById("plato").innerHTML="";
-    document.getElementById("resultado").innerHTML= "";
-    document.getElementById("resultado").classList.remove('bg-dark','bg-gradient');
-    ingesta.splice(0,ingesta.length);
 
-    //toma del DOM el plato 
-    let plato= document.getElementById("plato");
+    Swal.fire({
+        title: 'Esta seguro?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Sí, deshacer!',
+        denyButtonText: `No, no lo hagas!`,
+        icon: 'question',
+    }).then((result) => {
 
-    //Recorre el localStorage al reverso 
-    for (let i = localStorage.length-1; i >= 0 ; i--) {
+        if (result.isConfirmed) {
         
-        let clave = localStorage.key(i);
-        let datos = JSON.parse(localStorage.getItem(clave)); // obtiene los datos con parse
+            //Limpia los elemento necesarios para volver atras: tablaPlato, resultado y el arreglo ingesta
+            document.getElementById("plato").innerHTML="";
+            ingesta.splice(0,ingesta.length);
 
-        //crea un elemento tr por cada alimento recuperado 
-        let tr = document.createElement("tr");
-        //carga la información del tr usando plantillas literales
-        tr.innerHTML = `<td><b> ${datos.nombre}</b></td><td><b> ${datos.cantidad} ${datos.grupo.unidadMedida}</b></td><td><i class="bi-trash3" onclick="eliminar(this)"></i></td>`;
-        //agrega el tr al plato
-        plato.appendChild(tr);
-        
-        //busca el grupo recuperado del elemento del localStorage en el arreglo grupos y lo almacena en la variable grupo
-        let grupo = grupos.find((g) => g.getId() === Number(datos.grupo.id)); 
+            //toma del DOM el plato 
+            let plato= document.getElementById("plato");
 
-        //Crea un objeto Alimento con el nombre, grupo y cantidad recuperado del localStorage
-        let alimento = new Alimento(datos.nombre.toUpperCase(), grupo, datos.cantidad);
+            //Recorre el localStorage al reverso 
+            for (let i = localStorage.length-1; i >= 0 ; i--) {
+            
+                let clave = localStorage.key(i);
+                let datos = JSON.parse(localStorage.getItem(clave)); // obtiene los datos con parse
 
-        //Agrega el objeto alimento creado en el arreglo ingesta
-        ingesta.push(alimento);
+                //crea un elemento tr por cada alimento recuperado 
+                let tr = document.createElement("tr");
+                //carga la información del tr usando plantillas literales
+                tr.innerHTML = `<td><b> ${datos.nombre}</b></td><td><b> ${datos.cantidad} ${datos.grupo.unidadMedida}</b></td><td><i class="bi-trash3" onclick="eliminar(this)"></i></td>`;
+                //agrega el tr al plato
+                plato.appendChild(tr);
+                
+                //busca el grupo recuperado del elemento del localStorage en el arreglo grupos y lo almacena en la variable grupo
+                let grupo = grupos.find((g) => g.getId() === Number(datos.grupo.id)); 
 
-        if (ingesta.length == 1) // Muestro el encabezado de la tabla si es el primer alimento del arreglo ingesta
-        {
-            let tablaPlato= document.getElementById("tablaPlato");
-            tablaPlato.classList.remove('d-none');
+                //Crea un objeto Alimento con el nombre, grupo y cantidad recuperado del localStorage
+                let alimento = new Alimento(datos.nombre.toUpperCase(), grupo, datos.cantidad);
+
+                //Agrega el objeto alimento creado en el arreglo ingesta
+                ingesta.push(alimento);
+
+                if (ingesta.length == 1) // Muestro el encabezado de la tabla si es el primer alimento del arreglo ingesta
+                {
+                    let tablaPlato= document.getElementById("tablaPlato");
+                    tablaPlato.classList.remove('d-none');
+                }
+            }
+
+            Swal.fire('Hecho!', '', 'success')
+        } 
+        else if (result.isDenied) {
+            Swal.fire('Cambios no realizados', '', 'info')
         }
-    }
+    });
+
 }
 
 /***************** EVENTO CLICK DE BUTTON LIMPIAR *****************************/
+/***************** LIBRERIA SWEETALERT ***************************************/
 
 let limpiar = document.getElementById("limpiar"); //Variable que almacena el button limpiar
 
@@ -336,14 +362,90 @@ limpiar.addEventListener('click', limpiarElPlato); //Defino el evento click para
 //Limpia los elementos: arreglo ingesta, tablaPlato, resultado y localStorage
 function limpiarElPlato()
 {
-    let cantidadAlimentos = ingesta.length;
-    ingesta.splice(0,cantidadAlimentos);
-
-    document.getElementById("plato").innerHTML= "";
-    document.getElementById("tablaPlato").className += " d-none"; //oculto el encabezado de la tablaPlato
-    document.getElementById("resultado").innerHTML= "";
-    document.getElementById("resultado").classList.remove('bg-dark','bg-gradient');
     
-    localStorage.clear();
+    Swal.fire({
+        title: 'Esta seguro que desea limpiar el plato?',
+        text: "Esto no puede ser revertido!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, limpiar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let cantidadAlimentos = ingesta.length;
+            ingesta.splice(0,cantidadAlimentos);
+
+            document.getElementById("plato").innerHTML= "";
+            document.getElementById("tablaPlato").className += " d-none"; //oculto el encabezado de la tablaPlato
+    
+            localStorage.clear();
+
+            Swal.fire('Hecho!', '', 'success')
+            'Vacío!',
+            'Su plato está limpio.',
+            'success'
+        
+        }
+    });
     
 }    
+
+
+/***************** FETCH  *****************************/
+
+const listaGrupo = document.querySelector("#grupo");
+//archivo Json local. Si no funciona se puede usar la siguiente línea
+//fetch('https://lucibrasca.github.io/grupos.json')
+
+//Completa el select de los grupos desde un archivo json usando fetch
+fetch('grupos.json')
+.then((response) => response.json())
+.then((data) => {
+    data.forEach((grupo) => {
+
+    if (grupo.id == 1)
+        listaGrupo.innerHTML += `<option value="${grupo.id}" selected>${grupo.nombre}</option>`;
+    else
+        listaGrupo.innerHTML += `<option value="${grupo.id}">${grupo.nombre}</option>`;
+
+    } ) 
+});
+
+
+
+const carrousel = document.querySelector(".carousel-inner");
+//Arma un carousel de imagenes de platos desde una API usando fetch
+fetch('https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast')
+.then((response) => response.json())
+.then((data) => { 
+    
+    let cont=0;
+    data.meals.forEach((alimento) => { 
+    
+    const {strMeal, strMealThumb, idMeal} = alimento;
+    cont++;
+    if (cont == 1)
+        carrousel.innerHTML += `<div class="carousel-item active"><img class="d-block w-100" src="${strMealThumb}"></div>`;
+    else
+        carrousel.innerHTML += `<div class="carousel-item"><img class="d-block w-100" src="${strMealThumb}" ></div>`;
+    
+    });
+
+ });
+
+
+/***************** LIBRERIA TOASTIFY   *****************************/
+//Utiliza la funcion setInterval para reiterar la llamada a una notificación Toastify 
+setInterval(() => {
+    Toastify({
+        text: 'La OMS recomienda un aporte calórico para el adulto sano  de 1500 a 2000 kcal/día para la mujer y de 2000 a 2500 kcal/día para el hombre.',
+        duration: 5000,
+        gravity: 'top',
+        position: 'right',
+        style: {
+            background: 'linear-gradient(to right, #00b09b, #96c92d)'
+            }
+    }).showToast();
+}, 10000);
+
