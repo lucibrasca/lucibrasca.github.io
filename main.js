@@ -395,11 +395,9 @@ function limpiarElPlato()
 /***************** FETCH  *****************************/
 
 const listaGrupo = document.querySelector("#grupo");
-//archivo Json local. Si no funciona se puede usar la siguiente línea
-//fetch('https://lucibrasca.github.io/grupos.json')
 
 //Completa el select de los grupos desde un archivo json usando fetch
-fetch('grupos.json')
+fetch('https://lucibrasca.github.io/grupos.json')
 .then((response) => response.json())
 .then((data) => {
     data.forEach((grupo) => {
