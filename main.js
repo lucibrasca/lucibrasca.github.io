@@ -381,10 +381,10 @@ function limpiarElPlato()
     
             localStorage.clear();
 
-            Swal.fire('Hecho!', '', 'success')
+            Swal.fire(
             'Vacío!',
             'Su plato está limpio.',
-            'success'
+            'success');
         
         }
     });
